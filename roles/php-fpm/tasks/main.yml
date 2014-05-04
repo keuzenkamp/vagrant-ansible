@@ -1,0 +1,32 @@
+---
+- name: Install php-fpm and deps 
+  apt: name={{ item }} state=present
+  with_items:
+    - php5
+    - php5-fpm
+    - php-apc
+    - php5-cli
+    - php5-common
+    - php5-curl
+    - php5-gd
+    - php5-geoip
+    - php5-intl
+    - php5-mcrypt
+    - php5-mysql
+    - php5-pspell
+    - php5-xsl
+  environment:
+    PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:{{ lookup('env', 'PATH') }}
+
+- name: Disable default pool
+  command: mv /etc/php5/fpm/pool.d/www.conf /etc/php5/fpm/pool.d/www.disabled creates=/etc/php5/fpm/pool.d/www.disabled
+  ignore_errors: yes
+  notify: restart php5-fpm
+
+- name: prepare the log directory
+  file: path=/var/log/php5-fpm state=directory
+
+- name: Copy php-fpm configuration
+  template: src=magento.conf dest=/etc/php5/fpm/pool.d
+  notify: restart php5-fpm
+

@@ -1,0 +1,13 @@
+---
+  - name: install nginx
+    action: apt name=nginx
+    environment:
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:{{ lookup('env', 'PATH') }}
+
+  - name: write nginx.conf
+    action: template src=nginx.conf.j2 dest=/etc/nginx/nginx.conf
+ 
+  - name: set up default nginx site
+    action: template src=nginx.default.j2 dest=/etc/nginx/sites-available/default backup=yes validate='/etc/init.d/nginx configtest'
+    notify:
+      - restart nginx

@@ -1,0 +1,36 @@
+---
+# Description:
+# - Installing latest stable release of Varnish from its official repository
+
+- name:  Fetching signing key
+  apt_key: url=http://repo.varnish-cache.org/debian/GPG-key.txt
+
+- name:  Add Varnish repo
+  apt_repository: repo='deb http://repo.varnish-cache.org/debian/ {{ ansible_lsb.codename }} varnish-3.0' state=present
+
+- name:  Install Varnish package
+  apt: pkg=varnish state=present update_cache=yes
+  environment:
+    PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:{{ lookup('env', 'PATH') }}
+
+- name:  Push default config template
+  template:
+    src=varnish.default.j2
+    dest=/etc/default/varnish
+    owner=root group=root mode=0644
+
+- name:  Push default vcl template
+  template:
+    src=varnish.default.vcl.j2
+    dest=/etc/varnish/default.vcl
+    owner=root group=root mode=0644
+
+- name:  Push default config template
+  template:
+    src=varnish.secret.j2
+    dest=/etc/varnish/secret
+    owner=root group=root mode=0644
+  notify: varnish-restart
+
+- name:  Ensure it is running
+  service: name=varnish state=started

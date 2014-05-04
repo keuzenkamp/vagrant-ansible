@@ -1,0 +1,2 @@
+- name: make sure that the magento root folder exists
+  file: path=/home/apps/www/www.scarosso.com owner=apps group=apps mode=0777 state=directory

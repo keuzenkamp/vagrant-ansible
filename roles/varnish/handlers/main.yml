@@ -1,0 +1,9 @@
+---
+- name: varnish-start
+  service: name=varnish pattern=/etc/init.d/varnish state=started enabled=yes
+
+- name: varnish-restart
+  service: name=varnish pattern=/etc/init.d/varnish state=restarted enabled=yes
+
+- name: varnish-reload
+  service: name=varnish pattern=/etc/init.d/varnish state=reloaded enabled=yes

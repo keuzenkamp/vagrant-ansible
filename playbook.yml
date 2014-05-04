@@ -1,0 +1,11 @@
+---
+  - name: Install varnish, nginx, php5-fpm, redis, mysql
+    hosts: allinone
+    
+    roles:
+      - common
+      - magento
+      - varnish
+      - nginx
+      - php-fpm
+
