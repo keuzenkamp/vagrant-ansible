@@ -1,4 +1,10 @@
+#nginx
 user: www-data
 worker_processes: $ansible_processor_count
 pid: /var/run/nginx.pid
 worker_connections: 768
+
+#redis
+redis_version: 2.8.9
+redis_stdport: 6379
+redis_nstdport: 6389

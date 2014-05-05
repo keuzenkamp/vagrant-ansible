@@ -1,0 +1,19 @@
+- name: Start all Redis
+  command: "{{item}}" 
+  with_items:
+    - /etc/init.d/redis{{redis_stdport}} start
+    - /etc/init.d/redis{{redis_nstdport}} start
+
+- name: Start Redis {{redis_stdport}}
+  command: /etc/init.d/redis{{redis_stdport}} start
+
+- name: Start Redis {{redis_nstdport}}
+  command: /etc/init.d/redis{{redis_nstdport}} start
+
+- name: Stop Redis {{redis_stdport}}
+  command: /etc/init.d/redis{{redis_stdport}} start
+
+- name: Stop Redis {{redis_nstdport}}
+  command: /etc/init.d/redis{{redis_nstdport}} start
+
+

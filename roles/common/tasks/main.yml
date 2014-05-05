@@ -1,1 +1,13 @@
 - action: user name=apps
+
+- name: uninstall apache packages
+  environment:
+    PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:{{ lookup('env', 'PATH') }}
+  apt: >
+    pkg={{ item }} 
+    state=absent
+    purge=yes
+    force=yes
+  with_items:
+    - apache2*
+  sudo: yes

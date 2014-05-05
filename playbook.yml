@@ -8,4 +8,4 @@
       - varnish
       - nginx
       - php-fpm
-
+      - redis

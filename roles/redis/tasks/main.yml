@@ -1,0 +1,49 @@
+- name: Download Redis
+  get_url: url=http://download.redis.io/releases/redis-{{redis_version}}.tar.gz dest=/tmp
+
+- name: Untar Redis
+  command: chdir=/tmp creates=redis-{{redis_version}} tar -xzf redis-{{redis_version}}.tar.gz
+
+- name: create the directory needed by redis
+  file: path=/etc/redis owner=root group=root state=directory
+
+- file: path=/var/redis/{{redis_stdport}} owner=root group=root state=directory
+- file: path=/var/redis/{{redis_nstdport}} owner=root group=root state=directory
+
+- name: Install Redis
+  command: creates=/usr/local/bin/redis-server chdir=/tmp/redis-{{redis_version}} make install
+
+- name: Create user redis
+  user: name=redis system=yes home=/var/lib/redis shell=/bin/false
+
+- name: Check if the redis upstart jobs already exist
+  command: /usr/bin/test -e /etc/init.d/redis{{redis_stdport}}
+  register: std_init_exists
+  ignore_errors: True
+
+- name: Check if the redis upstart jobs already exist
+  command: /usr/bin/test -e /etc/init.d/redis{{redis_nstdport}}
+  register: nstd_init_exists
+  ignore_errors: True
+
+- name: Configure Upstart for Redis
+  command: cp /tmp/redis-{{redis_version}}/utils/redis_init_script /etc/init.d/redis{{redis_stdport}}
+  when: std_init_exists.rc != 0
+ 
+- command: cp /tmp/redis-{{redis_version}}/utils/redis_init_script /etc/init.d/redis{{redis_nstdport}}
+  when: nstd_init_exists.rc != 0
+- command: sed -i s/{{redis_stdport}}/{{redis_nstdport}}/g /etc/init.d/redis{{redis_nstdport}}
+  when: nstd_init_exists.rc != 0
+
+- name: Set up the Redis config for the two servers
+  template: src={{redis_stdport}}.conf dest=/etc/redis/{{redis_stdport}}.conf
+  
+- template: src={{redis_nstdport}}.conf dest=/etc/redis/{{redis_nstdport}}.conf
+  
+- name: ensure they are running
+  service: name={{ item.name }} state=started pattern={{ item.port }}
+  with_items:
+    - { name: 'redis{{ redis_stdport }}', port: '{{ redis_stdport }}' }
+    - { name: 'redis{{ redis_nstdport }}', port: '{{ redis_nstdport }}' }
+   # - redis{{ redis_stdport }}
+   # - redis{{ redis_nstdport }}
