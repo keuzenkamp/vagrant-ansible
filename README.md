@@ -1,4 +1,4 @@
-1. run the postinstall script
+1. run the postinstall script with curl -L https://gist.github.com/danvaida/7fab83e0962e8405799a/raw/postinstall.sh | bash
 2. shut down the machine
 3. vagrant package --base wheezy-vagrant --out wheezy-vagrant.box
 4. vagrant box add wheezy-vagrant wheezy-vagrant.box
