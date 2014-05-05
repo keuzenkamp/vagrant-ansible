@@ -19,20 +19,18 @@
     PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:{{ lookup('env', 'PATH') }}
 
 - name: Check if the the php-fpm default pool exists
-    command: /usr/bin/test -e /etc/php5/fpm/pool.d/www.conf
-    ignore_errors: yes
-    register: def_pool_exists
+  command: /usr/bin/test -e /etc/php5/fpm/pool.d/www.conf
+  register: def_pool_exists
 
 - name: Disable default pool
-    command: mv /etc/php5/fpm/pool.d/www.conf /etc/php5/fpm/pool.d/www.disabled creates=/etc/php5/fpm/pool.d/www.disabled
-    when: def_pool_exists != 0
-    ignore_errors: yes
-    notify: restart php5-fpm
+  command: mv /etc/php5/fpm/pool.d/www.conf /etc/php5/fpm/pool.d/www.disabled creates=/etc/php5/fpm/pool.d/www.disabled
+  when: def_pool_exists != 0
+  notify: restart php5-fpm
 
 - name: prepare the log directory
-    file: path=/var/log/php5-fpm state=directory
+  file: path=/var/log/php5-fpm state=directory
 
 - name: Copy php-fpm configuration
-    template: src=magento.conf dest=/etc/php5/fpm/pool.d
-    notify: restart php5-fpm
+  template: src=magento.conf dest=/etc/php5/fpm/pool.d
+  notify: restart php5-fpm
 
