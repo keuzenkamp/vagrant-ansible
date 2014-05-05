@@ -21,10 +21,11 @@
 - name: Check if the the php-fpm default pool exists
   command: /usr/bin/test -e /etc/php5/fpm/pool.d/www.conf
   register: def_pool_exists
+  ignore_errors: True
 
 - name: Disable default pool
   command: mv /etc/php5/fpm/pool.d/www.conf /etc/php5/fpm/pool.d/www.disabled creates=/etc/php5/fpm/pool.d/www.disabled
-  when: def_pool_exists != 0
+  when: def_pool_exists.rc == 0
   notify: restart php5-fpm
 
 - name: prepare the log directory
