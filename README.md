@@ -4,3 +4,5 @@
 4. vagrant box add wheezy-vagrant wheezy-vagrant.box
 5. run 'vagrant init' in a directory of choice
 6. edit the Vagrant file and change config.vm.box = "ubuntu-11.10" and other settings...
+
+useful pyYAML validator: https://yaml-online-parser.appspot.com/
